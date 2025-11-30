@@ -43,7 +43,7 @@ const server = http.createServer((req, res) => {
 
 	const intervalId = setInterval(() => {
 		const timestamp = new Date().toISOString();
-		const data = JSON.stringify({ timestamp });
+		const data = JSON.stringify({ timestamp, other: "a".repeat(1000) });
 		res.write(data);
 	}, interval);
 
