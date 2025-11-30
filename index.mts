@@ -1,6 +1,12 @@
-import http from "http";
+import http from "node:http";
 
 const PORT = 3000;
+
+const connectedClients = new Set();
+
+setInterval(() => {
+	console.log(`Connected clients: ${connectedClients.size}`);
+}, 1000);
 
 const server = http.createServer((req, res) => {
 	const url = new URL(req.url || "/", `http://${req.headers.host}`);
@@ -13,6 +19,11 @@ const server = http.createServer((req, res) => {
 		return;
 	}
 
+	const clientId = Math.random().toString(36).substring(2, 15);
+
+	console.log(`Client ${clientId} connected`);
+	connectedClients.add(clientId);
+
 	res.writeHead(200, {
 		"Content-Type": "application/json",
 		"Transfer-Encoding": "chunked",
@@ -23,13 +34,13 @@ const server = http.createServer((req, res) => {
 	const intervalId = setInterval(() => {
 		const timestamp = new Date().toISOString();
 		const data = JSON.stringify({ timestamp });
-
-		res.write(data + "\n");
+		res.write(data);
 	}, interval);
 
 	req.on("close", () => {
 		clearInterval(intervalId);
-		console.log("Client disconnected");
+		console.log(`Client ${clientId} disconnected`);
+		connectedClients.delete(clientId);
 	});
 });
 
