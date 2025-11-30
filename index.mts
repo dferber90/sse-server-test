@@ -3,12 +3,39 @@ import http from "http";
 const PORT = 3000;
 
 const server = http.createServer((req, res) => {
-	const currentTime = new Date().toISOString();
+	const url = new URL(req.url || "/", `http://${req.headers.host}`);
+	const intervalParam = url.searchParams.get("interval");
+	const interval = intervalParam ? Number.parseInt(intervalParam, 10) : 1000;
 
-	res.writeHead(200, { "Content-Type": "text/plain" });
-	res.end(`hello world\nCurrent time: ${currentTime}`);
+	if (Number.isNaN(interval) || interval < 100) {
+		res.writeHead(400, { "Content-Type": "text/plain" });
+		res.end("Invalid interval parameter. Must be a number >= 100ms");
+		return;
+	}
+
+	res.writeHead(200, {
+		"Content-Type": "application/json",
+		"Transfer-Encoding": "chunked",
+		"Cache-Control": "no-cache",
+		Connection: "keep-alive",
+	});
+
+	const intervalId = setInterval(() => {
+		const timestamp = new Date().toISOString();
+		const data = JSON.stringify({ timestamp });
+
+		res.write(data + "\n");
+	}, interval);
+
+	req.on("close", () => {
+		clearInterval(intervalId);
+		console.log("Client disconnected");
+	});
 });
 
 server.listen(PORT, () => {
 	console.log(`Server running on http://localhost:${PORT}`);
+	console.log(
+		`Usage: http://localhost:${PORT}?interval=1000 (interval in milliseconds)`,
+	);
 });
