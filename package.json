@@ -1,13 +1,18 @@
 {
-  "name": "sse-server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.24.0"
+	"name": "sse-server",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "node  --experimental-strip-types ./index.mts",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.24.0",
+	"devDependencies": {
+		"@types/ms": "^2.1.0",
+		"@types/node": "^24.10.1"
+	}
 }
