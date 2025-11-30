@@ -4,8 +4,18 @@ const PORT = 3000;
 
 const connectedClients = new Set();
 
+const d = () => {
+	const date = new Date();
+	const pad = (n: number) => n.toString().padStart(2, "0");
+	return [
+		pad(date.getHours()),
+		pad(date.getMinutes()),
+		pad(date.getSeconds()),
+	].join(":");
+};
+
 setInterval(() => {
-	console.log(`Connected clients: ${connectedClients.size}`);
+	console.log(`${d()} connected clients: ${connectedClients.size}`);
 }, 1000);
 
 const server = http.createServer((req, res) => {
@@ -21,7 +31,7 @@ const server = http.createServer((req, res) => {
 
 	const clientId = Math.random().toString(36).substring(2, 15);
 
-	console.log(`Client ${clientId} connected`);
+	console.log(`${d()} client ${clientId} connected`);
 	connectedClients.add(clientId);
 
 	res.writeHead(200, {
@@ -39,7 +49,7 @@ const server = http.createServer((req, res) => {
 
 	req.on("close", () => {
 		clearInterval(intervalId);
-		console.log(`Client ${clientId} disconnected`);
+		console.log(`${d()} client ${clientId} disconnected`);
 		connectedClients.delete(clientId);
 	});
 });
