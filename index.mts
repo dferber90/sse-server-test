@@ -25,7 +25,7 @@ const server = http.createServer((req, res) => {
 	connectedClients.add(clientId);
 
 	res.writeHead(200, {
-		"Content-Type": "application/json",
+		"Content-Type": "text/event-stream",
 		"Transfer-Encoding": "chunked",
 		"Cache-Control": "no-cache",
 		Connection: "keep-alive",
